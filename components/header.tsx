@@ -1,4 +1,6 @@
 import { cn } from '@/lib/utils'
+//import { UserButton } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
 import React from 'react'
 import HistoryContainer from './history-container'
 import { ModeToggle } from './mode-toggle'
@@ -14,7 +16,10 @@ export const Header: React.FC = async () => {
         </a>
       </div>
       <div className="flex gap-0.5">
-        <ModeToggle />
+        <div className="flex items-center gap-4">
+          <ModeToggle />
+          <UserButton afterSignOutUrl="/" />
+        </div>
         <HistoryContainer location="header" />
       </div>
     </header>

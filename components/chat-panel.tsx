@@ -41,7 +41,7 @@ export function ChatPanel({
   const isFirstRender = useRef(true)
   const [isComposing, setIsComposing] = useState(false) // Composition state
   const [enterDisabled, setEnterDisabled] = useState(false) // Disable Enter after composition ends
-
+  const [selectedOption, setSelectedOption] = useState('default')
   const handleCompositionStart = () => setIsComposing(true)
 
   const handleCompositionEnd = () => {
@@ -55,6 +55,22 @@ export function ChatPanel({
   const handleNewChat = () => {
     setMessages([])
     router.push('/')
+  }
+
+  const onSubmitModified = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    let finalQuery = input.trim()
+    if (finalQuery.length === 0) return
+    if (selectedOption !== 'default') {
+      finalQuery = `${finalQuery} in ${selectedOption}`
+    }
+    // Call append with the modified query
+    append({
+      role: 'user',
+      content: finalQuery
+    })
+    // Optionally clear the input here if needed:
+    // handleInputChange({ target: { value: '' } } as React.ChangeEvent<HTMLTextAreaElement>)
   }
 
   // if query is not empty, submit the query
@@ -84,7 +100,7 @@ export function ChatPanel({
         </div>
       )}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={onSubmitModified}
         className={cn(
           'max-w-3xl w-full mx-auto',
           messages.length > 0 ? 'px-2 py-4' : 'px-6'
@@ -134,6 +150,16 @@ export function ChatPanel({
               <SearchModeToggle />
             </div>
             <div className="flex items-center gap-2">
+              <select
+                value={selectedOption}
+                onChange={e => setSelectedOption(e.target.value)}
+                className="rounded border bg-background p-2 text-sm"
+              >
+                <option value="default">default</option>
+                <option value="simplify">simplify</option>
+                <option value="professional">professional</option>
+                <option value="elobarate">elobarate</option>
+              </select>
               {messages.length > 0 && (
                 <Button
                   variant="outline"
